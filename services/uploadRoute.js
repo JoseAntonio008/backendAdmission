@@ -45,7 +45,7 @@ uploadRouter.post("/upload", upload.single("file"), async (req, res) => {
     // Send success response
     res.status(200).json({
       message: "Upload successful",
-      publicId:result.public_id,
+      publicId: result.public_id,
       url: result.secure_url,
     });
   } catch (error) {
@@ -54,16 +54,16 @@ uploadRouter.post("/upload", upload.single("file"), async (req, res) => {
   }
 });
 const base64ToBuffer = (base64String) => {
-  const base64Data = base64String.replace(/^data:image\/\w+;base64,/, ''); // Remove metadata if present
-  return Buffer.from(base64Data, 'base64');
+  const base64Data = base64String.replace(/^data:image\/\w+;base64,/, ""); // Remove metadata if present
+  return Buffer.from(base64Data, "base64");
 };
 
-uploadRouter.post('/upload-quiz', async (req, res) => {
+uploadRouter.post("/upload-quiz", async (req, res) => {
   try {
     const { author, question } = req.body;
 
     if (!author || !Array.isArray(question)) {
-      return res.status(400).json({ message: 'Invalid request format' });
+      return res.status(400).json({ message: "Invalid request format" });
     }
 
     const processedQuestions = [];
@@ -73,26 +73,37 @@ uploadRouter.post('/upload-quiz', async (req, res) => {
       const processedChoices = [];
 
       if (!q.choices || !Array.isArray(q.choices)) {
-        return res.status(400).json({ message: `Invalid choices format in question ${i + 1}` });
+        return res
+          .status(400)
+          .json({ message: `Invalid choices format in question ${i + 1}` });
       }
 
       for (let j = 0; j < q.choices.length; j++) {
         const choice = q.choices[j];
 
-        if (choice.image && choice.image.startsWith('data:image')) {
+        if (choice.image && choice.image.startsWith("data:image")) {
           try {
             // Extract Base64 data and upload to Cloudinary
-            const base64Data = choice.image.replace(/^data:image\/\w+;base64,/, '');
-            const uploadResponse = await cloudinary.uploader.upload(`data:image/jpeg;base64,${base64Data}`,{
-              folder:"uploads"
-            });
+            const base64Data = choice.image.replace(
+              /^data:image\/\w+;base64,/,
+              ""
+            );
+            const uploadResponse = await cloudinary.uploader.upload(
+              `data:image/jpeg;base64,${base64Data}`,
+              {
+                folder: "uploads",
+              }
+            );
 
             processedChoices.push({
               ...choice,
               image: uploadResponse.secure_url, // Replace with Cloudinary URL
             });
           } catch (error) {
-            console.error(`Error uploading image for choice ${j + 1} of question ${i + 1}`, error);
+            console.error(
+              `Error uploading image for choice ${j + 1} of question ${i + 1}`,
+              error
+            );
             processedChoices.push(choice);
           }
         } else {
@@ -104,19 +115,48 @@ uploadRouter.post('/upload-quiz', async (req, res) => {
         ...q,
         choices: processedChoices,
       });
+
+      let processedQuestionImage = q.questionImage;
+      if (q.questionImage && q.questionImage.startsWith("data:image")) {
+        try {
+          // Upload the question image if it's Base64
+          const base64Data = q.questionImage.replace(
+            /^data:image\/\w+;base64,/,
+            ""
+          );
+          const uploadResponse = await cloudinary.uploader.upload(
+            `data:image/jpeg;base64,${base64Data}`,
+            { folder: "uploads" }
+          );
+          processedQuestionImage = uploadResponse.secure_url; // Replace with Cloudinary URL
+        } catch (error) {
+          console.error(
+            `Error uploading question image for question ${i + 1}`,
+            error
+          );
+        }
+      }
+
+      processedQuestions.push({
+        ...q,
+        questionImage: processedQuestionImage,
+        choices: processedChoices,
+      });
     }
 
     // Send the response with processed data
     res.status(200).json({
-      message: 'Quiz processed and images uploaded successfully!',
+      message: "Quiz processed and images uploaded successfully!",
       data: {
         author,
         question: processedQuestions,
       },
     });
   } catch (error) {
-    console.error('Error processing quiz:', error);
-    res.status(500).json({ message: 'Server error', error: error.message || error });
+    console.error("Error processing quiz:", error);
+    res
+      .status(500)
+      .json({ message: "Server error", error: error.message || error });
   }
 });
 
