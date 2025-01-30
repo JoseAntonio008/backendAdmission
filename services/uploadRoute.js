@@ -1,7 +1,7 @@
 const express = require("express");
 const cloudinary = require("../utils/cloudinary"); // Import the Cloudinary config
 const multer = require("multer");
-
+const {Questions} = require('../models');
 // Configure multer for handling form-data
 const storage = multer.memoryStorage();
 const upload = multer({
@@ -104,19 +104,11 @@ uploadRouter.post("/upload-quiz", async (req, res) => {
               `Error uploading image for choice ${j + 1} of question ${i + 1}`,
               error
             );
-            processedChoices.push(choice);
           }
-        } else {
-          processedChoices.push(choice); // Keep as is if no Base64 image
         }
       }
 
-      processedQuestions.push({
-        ...q,
-        choices: processedChoices,
-      });
-
-      let processedQuestionImage = q.questionImage;
+      let processedQuestionImage = null;
       if (q.questionImage && q.questionImage.startsWith("data:image")) {
         try {
           // Upload the question image if it's Base64
@@ -143,7 +135,19 @@ uploadRouter.post("/upload-quiz", async (req, res) => {
         choices: processedChoices,
       });
     }
-
+    console.log(processedQuestions);
+    
+    const createQuestions = await Questions.bulkCreate(
+      processedQuestions.map((q) => ({
+        questionTitle: q.questionTitle,
+        questionImage: q.questionImage,
+        category: q.category,
+        choices: q.choices, // Storing choices as JSON
+        author: author, // Use the `author` from req.body
+        correctAnswer: q.correctAnswer,
+      }))
+    );
+    
     // Send the response with processed data
     res.status(200).json({
       message: "Quiz processed and images uploaded successfully!",
@@ -159,5 +163,6 @@ uploadRouter.post("/upload-quiz", async (req, res) => {
       .json({ message: "Server error", error: error.message || error });
   }
 });
+
 
 module.exports = uploadRouter;
