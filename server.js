@@ -2,6 +2,7 @@ const express = require("express");
 const uploadRouter = require("./services/uploadRoute");
 require("dotenv").config(); // Load environment variables
 const cors = require("cors");
+
 const { sequelize } = require("./models");
 const studentProfilerRouter = require("./controllers/studentProfiling.controller");
 const app = express();
