@@ -26,6 +26,7 @@ const submit = async (
   schoolGraduated
 ) => {
   try {
+    
     const checkEmailinNew = await NewStudent.findOne({
       where: {
         email,
