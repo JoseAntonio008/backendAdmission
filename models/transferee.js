@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     middleName: DataTypes.STRING,
     lastName: DataTypes.STRING,
     studentType: DataTypes.STRING,
-    typeOfSchool: DataTypes.STRING,
+      
     nameCollege: DataTypes.STRING,
     courseEnrolled: DataTypes.STRING,
     highestAttainedYear: DataTypes.STRING,

@@ -6,147 +6,54 @@ const {
 } = require("../models");
 
 const submit = async (
-  email,
-  firstName,
-  middleName,
-  lastName,
-  studentType,
-  residency,
-  shs,
-  awardsReceived,
-  schoolType,
-  schoolAddress,
-  yearGraduated,
-  schoolTypeCollege,
-  nameCollege,
-  courseEnrolled,
-  highestAttainedYear,
-  courseCompleter,
-  courseCompleted,
-  schoolGraduated
-) => {
+ body) => {
   try {
-    
-    const checkEmailinNew = await NewStudent.findOne({
-      where: {
-        email,
-      },
-    });
-    const checkEmailinTransferee = await Transferee.findOne({
-      where: {
-        email,
-      },
-    });
-    const checkEmailinReturning = await Returning.findOne({
-      where: {
-        email,
-      },
-    });
-    const checkEmailinSecond = await SecondDegreeTaker.findOne({
-      where: {
-        email,
-      },
-    });
-    if (
-      checkEmailinNew &&
-      checkEmailinNew.lastName == lastName &&
-      checkEmailinNew.firstName == firstName
-    ) {
-      throw new Error("already exists in New");
+    const { email,
+      firstName,
+      middleName,
+      lastName,
+      studentType,
+      residency,
+      shs,
+      awardsReceived,
+      schoolType,
+      schoolAddress,
+      yearGraduated,
+      schoolTypeCollege,
+      nameCollege,
+      courseEnrolled,
+      highestAttainedYear,
+      courseCompleter,
+      courseCompleted,
+      schoolGraduated
+     } = body
+    const checkExisting = await Promise.all([
+      NewStudent.findOne({ where: { email } }),
+      Transferee.findOne({ where: { email } }),
+      Returning.findOne({ where: { email } }),
+      SecondDegreeTaker.findOne({ where: { email } }),
+    ]);
+
+    const existingTypes = ["New", "Transferee", "Returning", "2nd Degree Taker"];
+    for (let i = 0; i < checkExisting.length; i++) {
+      if (checkExisting[i] && checkExisting[i].lastName === lastName && checkExisting[i].firstName === firstName) {
+        throw new Error(`Student already exists in ${existingTypes[i]}`);
+      }
     }
-    if (
-        checkEmailinTransferee &&
-        checkEmailinTransferee.lastName == lastName &&
-        checkEmailinTransferee.firstName == firstName
-      ) {
-        throw new Error("already exists in transferee");
-      }
-      if (
-        checkEmailinReturning &&
-        checkEmailinReturning.lastName == lastName &&
-        checkEmailinReturning.firstName == firstName
-      ) {
-        throw new Error("already exists in Returning");
-      }
-      if (
-        checkEmailinSecond &&
-        checkEmailinSecond.lastName == lastName &&
-        checkEmailinSecond.firstName == firstName
-      ) {
-        throw new Error("already exists in 2nd degree taker");
-      }
 
-    
-      if (studentType == "New Student") {
-        console.log("creating new student profile");
-        
-        const create = await NewStudent.create({
-          email,
-          firstName,
-          middleName,
-          lastName,
-          studentType,
-          residency,
-          shs,
-          schoolType,
-          schoolAddress,
-          yearGraduated,
-          awardsReceived
-        })
-      }
-      if (studentType == "Transferee") {
-        console.log("creating Transferee profile");
-
-        const create = await Transferee.create({
-          email,
-          firstName,
-          middleName,
-          lastName,
-          studentType,
-          typeOfSchool,
-          nameCollege,
-          courseEnrolled,
-          highestAttainedYear,
-          schoolAddress,
-          awardsReceived,
-          residency
-        })
-        
-      }
-      if (studentType == "Returning Student") {
-        console.log("creating returning student profile");
-        
-
-        const create = await Returning.create({
-          email,
-          firstName,
-          middleName,
-          lastName,
-          studentType
-        })
-      }
-      if (studentType == "2nd Degree Taker") {
-        console.log("creating 2nd degree taker");
-        
-        const create = await SecondDegreeTaker.create({
-          email,
-          firstName,
-          middleName,
-          lastName,
-          studentType,
-          residency,
-          courseCompleter,
-          courseCompleted,
-          yearGraduated,
-          schoolGraduated,
-          schoolAddress,
-          awardsReceived
-        })
-      }
-    return { 
-      message:"success",
-      data:`email: ${email}`
+    // Create student record based on type
+    let createdStudent;
+    if (studentType === "New Student") {
+      createdStudent = await NewStudent.create(body);
+    } else if (studentType === "Transferee") {
+      createdStudent = await Transferee.create(body);
+    } else if (studentType === "Returning Student") {
+      createdStudent = await Returning.create(body);
+    } else if (studentType === "2nd Degree Taker") {
+      createdStudent = await SecondDegreeTaker.create(body);
     }
+
+    return { message: "success", data: createdStudent };
     
   } catch (error) {
     return { 
