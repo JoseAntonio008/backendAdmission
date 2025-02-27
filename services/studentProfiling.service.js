@@ -5,10 +5,10 @@ const {
   Transferee,
 } = require("../models");
 
-const submit = async (
- body) => {
+const submit = async (body) => {
   try {
-    const { email,
+    const {
+      email,
       firstName,
       middleName,
       lastName,
@@ -25,8 +25,8 @@ const submit = async (
       highestAttainedYear,
       courseCompleter,
       courseCompleted,
-      schoolGraduated
-     } = body
+      schoolGraduated,
+    } = body;
     const checkExisting = await Promise.all([
       NewStudent.findOne({ where: { email } }),
       Transferee.findOne({ where: { email } }),
@@ -34,10 +34,23 @@ const submit = async (
       SecondDegreeTaker.findOne({ where: { email } }),
     ]);
 
-    const existingTypes = ["New", "Transferee", "Returning", "2nd Degree Taker"];
+    const existingTypes = [
+      "New",
+      "Transferee",
+      "Returning",
+      "2nd Degree Taker",
+    ];
     for (let i = 0; i < checkExisting.length; i++) {
-      if (checkExisting[i] && checkExisting[i].lastName === lastName && checkExisting[i].firstName === firstName) {
-        throw new Error(`Student already exists in ${existingTypes[i]}`);
+      if (
+        checkExisting[i] &&
+        ((checkExisting[i].lastName === lastName &&
+          checkExisting[i].firstName === firstName) ||
+          checkExisting[i].email === email)
+      ) {
+        return {
+          message: "success",
+          data: `Student already exists in ${existingTypes[i]} student`,
+        };
       }
     }
 
@@ -45,7 +58,7 @@ const submit = async (
     let createdStudent;
     if (studentType === "New Student") {
       createdStudent = await NewStudent.create(body);
-    } else if (studentType === "Transferee") {
+    } else if (studentType === "transferee") {
       createdStudent = await Transferee.create(body);
     } else if (studentType === "Returning Student") {
       createdStudent = await Returning.create(body);
@@ -53,17 +66,15 @@ const submit = async (
       createdStudent = await SecondDegreeTaker.create(body);
     }
 
-    return { message: "success", data: createdStudent };
-    
+    return { message: "success", data: createdStudent.studentType };
   } catch (error) {
-    return { 
-      message:"error occured",
-      error:error.message
-    }
-    
+    return {
+      message: "error occured",
+      error: error.message,
+    };
   }
 };
 
-module.exports ={
-    submit
-}
+module.exports = {
+  submit,
+};
