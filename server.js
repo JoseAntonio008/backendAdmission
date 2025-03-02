@@ -19,7 +19,7 @@ app.use("/api/student",studentProfilerRouter)
 app.listen(port, async () => {
   try {
     console.log(`Server running on PORT: ${port}`);
-    await sequelize.sync();  
+    await sequelize.sync({alter:true});  
   } catch (error) {
     console.log(error.message);
     
