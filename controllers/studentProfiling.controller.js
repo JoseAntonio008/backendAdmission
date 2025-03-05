@@ -1,5 +1,6 @@
 const express = require("express");
-const { submit } = require("../services/studentProfiling.service");
+const { submit, fetchNew } = require("../services/studentProfiling.service");
+const { authMiddleware } = require("../middleware/authmiddleware");
 const studentProfilerRouter = express.Router();
 
 studentProfilerRouter.post("/submitProfiling", async (req, res) => {
@@ -28,5 +29,25 @@ studentProfilerRouter.post("/submitProfiling", async (req, res) => {
       .json({ message: "error occurred", error: error.message });
   }
 });
-
+studentProfilerRouter.get("/fetchNew", authMiddleware, async (req, res) => {
+  try {
+    const response = await fetchNew();
+    console.log(response);
+    
+    if (!response.data) {
+      return res.status(200).json({
+        message:response.message
+      })
+    }
+    return res.status(200).json({
+      message: "fetch successfully",
+      data: response.data,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "An error occured",
+      error: error.message,
+    });
+  }
+});
 module.exports = studentProfilerRouter;

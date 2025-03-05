@@ -6,6 +6,7 @@ const cors = require("cors");
 const { sequelize } = require("./models");
 const studentProfilerRouter = require("./controllers/studentProfiling.controller");
 const adminRouter = require("./controllers/admin.controller");
+const dashboardRouter = require("./controllers/dashboard.controller");
 const app = express();
 const port = 5000;
 
@@ -18,6 +19,7 @@ app.use(cors());
 app.use
 app.use("/api/student",studentProfilerRouter)
 app.use("/api/admin",adminRouter)
+app.use('/api/dashboard',dashboardRouter)
 
 app.use("/api", uploadRouter);
 // Start server

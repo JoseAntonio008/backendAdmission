@@ -19,9 +19,11 @@ const verifyToken = (token, customKey) => {
   }
 };
 
+const getToken = (authHeader) => authHeader?.split(" ")[1] ?? null;
 module.exports = {
   hashedPassword,
   comparePassword,
   signToken,
   verifyToken,
+  getToken
 };

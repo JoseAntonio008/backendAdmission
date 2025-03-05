@@ -75,6 +75,28 @@ const submit = async (body) => {
   }
 };
 
+const fetchNew = async () => {
+  try {
+    const fetch = await NewStudent.findAll();
+    if(fetch.length == 0 ){
+      return {
+        message:"no data found"
+      }
+    }
+
+    return {
+      message:"fetch successfully",
+      data:fetch
+    }
+  } catch (error) {
+    return {
+      message:"An error occured",
+      error:error.message
+    }
+  }
+}
+
 module.exports = {
   submit,
+  fetchNew
 };

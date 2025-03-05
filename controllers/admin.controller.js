@@ -13,7 +13,7 @@ adminRouter.post("/login", async (req, res) => {
     
     if (response.message == "An error occured") throw new Error(response.error);
     if (response.token) {
-        console.log(`here: token`);
+        // console.log(`here: token`);
         
       return res.status(200).json({
         message: response.message,
