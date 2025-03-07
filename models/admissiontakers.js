@@ -21,7 +21,12 @@ module.exports = (sequelize, DataTypes) => {
     courseChoices: DataTypes.JSON,
     lname:DataTypes.STRING,
     password:DataTypes.STRING,
-    token:DataTypes.STRING
+    token:DataTypes.STRING,
+    email:DataTypes.STRING,
+    status:{
+      type:DataTypes.STRING,
+      defaultValue:"active"
+    }
   }, {
     sequelize,
     modelName: 'Admissiontakers',

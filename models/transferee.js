@@ -26,7 +26,11 @@ module.exports = (sequelize, DataTypes) => {
     schoolAddress: DataTypes.STRING,
     awardsReceived: DataTypes.STRING,
     residency: DataTypes.STRING,
-    schoolTypeCollege:DataTypes.STRING
+    schoolTypeCollege:DataTypes.STRING,
+    status:{
+      type:DataTypes.STRING,
+      defaultValue:'active'
+    }
   }, {
     sequelize,
     modelName: 'Transferee',
