@@ -7,7 +7,9 @@ quizRouter.get("/fetchQuestions", async (req, res) => {
   try {
     const result = await fetchQuestions();
     if (result.message == "No questions available") {
-      return res.status(200).json({ message: "no questions available" ,data:[]});
+      return res
+        .status(200)
+        .json({ message: "no questions available", data: [] });
     }
     if (result.error) throw new Error(error.error);
     return res.status(200).json({ message: "success", data: result.data });
@@ -21,7 +23,7 @@ quizRouter.get("/fetchQuestions", async (req, res) => {
 quizRouter.put("/update-choice/:questionId", async (req, res) => {
   try {
     const { questionId } = req.params;
-    const { choiceIndex, newText, action } = req.body;
+    const { choiceIndex, newText, action, newImage } = req.body;
 
     // Find the question
     const question = await Questions.findByPk(questionId);
@@ -36,8 +38,9 @@ quizRouter.put("/update-choice/:questionId", async (req, res) => {
     if (choiceIndex < 0 || choiceIndex >= choices.length) {
       return res.status(400).json({ message: "Invalid choice index" });
     }
-
-    if (action === "update") {
+    if (action === "add") {
+      choices.push({ text: newText, image: newImage || null });
+    } else if (action === "update") {
       // Update the specific choice
       choices[choiceIndex].text = newText || choices[choiceIndex].text;
     } else if (action === "delete") {
