@@ -133,6 +133,7 @@ studentProfilerRouter.get("/fetchAdmission", authMiddleware, async (req, res) =>
         message:response.message
       })
     }
+    
     return res.status(200).json({
       message: "fetch successfully",
       data: response.data,

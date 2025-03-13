@@ -8,6 +8,7 @@ const studentProfilerRouter = require("./controllers/studentProfiling.controller
 const adminRouter = require("./controllers/admin.controller");
 const dashboardRouter = require("./controllers/dashboard.controller");
 const scheduleRouter = require("./controllers/schedule.controller");
+const quizRouter = require("./controllers/quiz.controller");
 const app = express();
 const port = 5000;
 
@@ -23,6 +24,7 @@ app.use("/api/admin",adminRouter)
 app.use('/api/dashboard',dashboardRouter)
 app.use('/api/schedule',scheduleRouter)
 app.use("/api", uploadRouter);
+app.use('/api/questions',quizRouter)
 // Start server
 
 

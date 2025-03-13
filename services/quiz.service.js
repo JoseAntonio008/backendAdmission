@@ -4,17 +4,31 @@ const { Questions } = require("../models");
 const fetchQuestions = async () => {
   try {
     const result = await Questions.findAll();
+    
+    if (result.length === 0) {
+      return {
+        message: "No questions available",
+      };
+    }
+
+    // Parse choices for each question
+    const cleanedResult = result.map((question) => ({
+      ...question.toJSON(), // Convert Sequelize object to plain JSON
+      choices: JSON.parse(question.choices), // Parse the JSON string
+    }));
+
     return {
-      message: "results retrieved successfully",
-      data: result,
+      message: "Success",
+      data: cleanedResult,
     };
   } catch (error) {
     return {
-      message: "an Error occured",
+      message: "An error occurred",
       error: error.message,
     };
   }
 };
+
 
 const deleteQuestion = async (id) => {
   try {

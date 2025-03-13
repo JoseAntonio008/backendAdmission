@@ -84,15 +84,10 @@ uploadRouter.post("/upload-quiz", async (req, res) => {
         if (choice.image && choice.image.startsWith("data:image")) {
           try {
             // Extract Base64 data and upload to Cloudinary
-            const base64Data = choice.image.replace(
-              /^data:image\/\w+;base64,/,
-              ""
-            );
+            const base64Data = choice.image.replace(/^data:image\/\w+;base64,/, "");
             const uploadResponse = await cloudinary.uploader.upload(
               `data:image/jpeg;base64,${base64Data}`,
-              {
-                folder: "uploads",
-              }
+              { folder: "uploads" }
             );
 
             processedChoices.push({
@@ -104,7 +99,11 @@ uploadRouter.post("/upload-quiz", async (req, res) => {
               `Error uploading image for choice ${j + 1} of question ${i + 1}`,
               error
             );
+            processedChoices.push(choice); // Ensure choice is still added even if upload fails
           }
+        } else {
+          // Add choice even if it has no image
+          processedChoices.push(choice);
         }
       }
 

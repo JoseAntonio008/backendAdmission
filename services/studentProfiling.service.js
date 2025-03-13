@@ -7,7 +7,6 @@ const {
 } = require("../models");
 const { Op } = require("sequelize");
 
-
 const submit = async (body) => {
   try {
     const {
@@ -87,7 +86,26 @@ const fetchNew = async () => {
     });
     if (fetch.length == 0) {
       return {
-        message: "no data found",
+        message: "fetch successfully",
+        data: [
+          {
+            id: "",
+            email: "",
+            firstName: "",
+            middleName: "",
+            lastName: "",
+            studentType: "",
+            residency: "",
+            shs: "",
+            schoolType: "",
+            schoolAddress: "",
+            yearGraduated: "",
+            awardsReceived: "",
+            status: "",
+            createdAt: "",
+            updatedAt: "",
+          },
+        ],
       };
     }
 
@@ -128,7 +146,27 @@ const fetchSecond = async () => {
     });
     if (fetch.length == 0) {
       return {
-        message: "no data found",
+        message: "fetch successfully",
+        data: [
+          {
+            id: "",
+            email: "",
+            firstName: "",
+            middleName: "",
+            lastName: "",
+            studentType: "",
+            residency: "",
+            courseCompleter: "",
+            courseCompleted: "",
+            yearGraduated: "",
+            schoolGraduated: "",
+            schoolAddress: "",
+            awardsReceived: "",
+            status: "",
+            createdAt: "",
+            updatedAt: "",
+          },
+        ],
       };
     }
 
@@ -169,7 +207,20 @@ const fetchReturning = async () => {
     });
     if (fetch.length == 0) {
       return {
-        message: "no data found",
+        message: "fetch successfully",
+        data: [
+          {
+            id: "",
+            email: "",
+            firstName: "",
+            middleName: "",
+            lastName: "",
+            studentType: "",
+            status: "",
+            createdAt: "",
+            updatedAt: "",
+          },
+        ],
       };
     }
 
@@ -210,7 +261,24 @@ const fetchAdmission = async () => {
     });
     if (fetch.length == 0) {
       return {
-        message: "no data found",
+        message: "fetch successfully",
+        data: [
+          {
+            id: "",
+            admissionNumber: "",
+            examSchedule: "",
+            fname: "",
+            mname: "",
+            courseChoices: "",
+            lname: "",
+            password: "",
+            token: "",
+            email: "",
+            status: "",
+            createdAt: "",
+            updatedAt: "",
+          },
+        ],
       };
     }
 
@@ -269,7 +337,6 @@ const archivedNew = async ({ id }) => {
   }
 };
 
-
 const approveNew = async ({ id, examSchedule }) => {
   try {
     // Ensure `id` is an array
@@ -302,19 +369,22 @@ const approveNew = async ({ id, examSchedule }) => {
         fname: record.firstName,
         mname: record.middleName,
         lname: record.lastName,
-        email:record.email,
+        email: record.email,
         examSchedule: examSchedule || null, // Ensure correct data type
         admissionNumber: nextAdmissionNumber + index, // Increment admission number
       }))
     );
 
-    await NewStudent.update({
-      status:'scheduled'
-    },{
-      where:{
-        id:{[Op.in]:id}
+    await NewStudent.update(
+      {
+        status: "scheduled",
+      },
+      {
+        where: {
+          id: { [Op.in]: id },
+        },
       }
-    })
+    );
 
     return { message: "success", data: newAdmissions };
   } catch (error) {
@@ -353,19 +423,22 @@ const approveTransferee = async ({ id, examSchedule }) => {
         fname: record.firstName,
         mname: record.middleName,
         lname: record.lastName,
-        email:record.email,
+        email: record.email,
         examSchedule: examSchedule || null, // Ensure correct data type
         admissionNumber: nextAdmissionNumber + index, // Increment admission number
       }))
     );
 
-    await Transferee.update({
-      status:'scheduled'
-    },{
-      where:{
-        id:{[Op.in]:id}
+    await Transferee.update(
+      {
+        status: "scheduled",
+      },
+      {
+        where: {
+          id: { [Op.in]: id },
+        },
       }
-    })
+    );
 
     return { message: "success", data: newAdmissions };
   } catch (error) {
@@ -405,19 +478,22 @@ const approveSecond = async ({ id, examSchedule }) => {
         fname: record.firstName,
         mname: record.middleName,
         lname: record.lastName,
-        email:record.email,
+        email: record.email,
         examSchedule: examSchedule || null, // Ensure correct data type
         admissionNumber: nextAdmissionNumber + index, // Increment admission number
       }))
     );
 
-    await SecondDegreeTaker.update({
-      status:'scheduled'
-    },{
-      where:{
-        id:{[Op.in]:id}
+    await SecondDegreeTaker.update(
+      {
+        status: "scheduled",
+      },
+      {
+        where: {
+          id: { [Op.in]: id },
+        },
       }
-    })
+    );
 
     return { message: "success", data: newAdmissions };
   } catch (error) {
@@ -425,14 +501,14 @@ const approveSecond = async ({ id, examSchedule }) => {
   }
 };
 
-const changeSchedule = async ({ id,examSchedule }) => {
+const changeSchedule = async ({ id, examSchedule }) => {
   try {
     if (!Array.isArray(id) || id.length === 0) {
       throw new Error("ID must be a non-empty array.");
     }
 
     const toArchived = await Admissiontakers.update(
-      { examSchedule  : examSchedule },
+      { examSchedule: examSchedule },
       {
         where: {
           id: { [Op.in]: id }, // ✅ Correct usage
@@ -460,7 +536,27 @@ const fetchTransferee = async () => {
     });
     if (fetch.length == 0) {
       return {
-        message: "no data found",
+        message: "fetch successfully",
+        data: [
+          {
+            id: "",
+            email: "",
+            firstName: "",
+            middleName: "",
+            lastName: "",
+            studentType: "",
+            nameCollege: "",
+            courseEnrolled: "",
+            highestAttainedYear: "",
+            schoolAddress: "",
+            awardsReceived: "",
+            residency: "",
+            schoolTypeCollege: "",
+            status: "",
+            createdAt: "2025",
+            updatedAt: "",
+          },
+        ],
       };
     }
 
@@ -572,7 +668,6 @@ const archivedAdmission = async ({ id }) => {
   }
 };
 
-
 module.exports = {
   submit,
   fetchNew,
@@ -587,5 +682,5 @@ module.exports = {
   fetchReturning,
   fetchAdmission,
   changeSchedule,
-  archivedAdmission
+  archivedAdmission,
 };
