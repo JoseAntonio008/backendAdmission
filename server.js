@@ -9,6 +9,7 @@ const adminRouter = require("./controllers/admin.controller");
 const dashboardRouter = require("./controllers/dashboard.controller");
 const scheduleRouter = require("./controllers/schedule.controller");
 const quizRouter = require("./controllers/quiz.controller");
+const admissionRouter = require("./controllers/admission.controller");
 const app = express();
 const port = 5000;
 
@@ -25,6 +26,7 @@ app.use("/api/dashboard", dashboardRouter);
 app.use("/api/schedule", scheduleRouter);
 app.use("/api", uploadRouter);
 app.use("/api/questions", quizRouter);
+app.use('/api/admission',admissionRouter)
 // Start server
 
 app.listen(port, async () => {
