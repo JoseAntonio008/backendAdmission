@@ -26,13 +26,13 @@ app.use("/api/dashboard", dashboardRouter);
 app.use("/api/schedule", scheduleRouter);
 app.use("/api", uploadRouter);
 app.use("/api/questions", quizRouter);
-app.use('/api/admission',admissionRouter)
+app.use("/api/admission", admissionRouter);
 // Start server
 
 app.listen(port, async () => {
   try {
     console.log(`Server running on PORT: ${port}`);
-    await sequelize.sync({ alter: true });
+    await sequelize.sync();
   } catch (error) {
     console.log(error.message);
   }

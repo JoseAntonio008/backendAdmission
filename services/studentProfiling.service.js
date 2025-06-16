@@ -86,49 +86,15 @@ const fetchNew = async () => {
     });
     if (fetch.length == 0) {
       return {
-        message: "fetch successfully",
-        data: [
-          {
-            id: "",
-            email: "",
-            firstName: "",
-            middleName: "",
-            lastName: "",
-            studentType: "",
-            residency: "",
-            shs: "",
-            schoolType: "",
-            schoolAddress: "",
-            yearGraduated: "",
-            awardsReceived: "",
-            status: "",
-            createdAt: "",
-            updatedAt: "",
-          },
-        ],
+        message: "No new students found", // Change this line
+        data: [], // Ideally, return an empty array, not a placeholder object
+        availableSlots: [], // Or specific empty slots if applicable
       };
     }
 
     return {
       message: "fetch successfully",
       data: fetch,
-      availableSlots: [
-        {
-          dateTime: "2024-10-27T10:00:00Z",
-          location: "Room 101",
-          description: "Initial consultation",
-        },
-        {
-          dateTime: "2024-10-27T14:00:00Z",
-          location: "Online",
-          description: "Online interview",
-        },
-        {
-          dateTime: "2024-10-28T09:30:00Z",
-          location: "Room 102",
-          description: "Document review",
-        },
-      ],
     };
   } catch (error) {
     return {
@@ -146,50 +112,15 @@ const fetchSecond = async () => {
     });
     if (fetch.length == 0) {
       return {
-        message: "fetch successfully",
-        data: [
-          {
-            id: "",
-            email: "",
-            firstName: "",
-            middleName: "",
-            lastName: "",
-            studentType: "",
-            residency: "",
-            courseCompleter: "",
-            courseCompleted: "",
-            yearGraduated: "",
-            schoolGraduated: "",
-            schoolAddress: "",
-            awardsReceived: "",
-            status: "",
-            createdAt: "",
-            updatedAt: "",
-          },
-        ],
+        message: "No second degree students found", // Change this line
+        data: [], // Ideally, return an empty array, not a placeholder object
+        availableSlots: [], // Or specific empty slots if applicable
       };
     }
 
     return {
       message: "fetch successfully",
       data: fetch,
-      availableSlots: [
-        {
-          dateTime: "2024-10-27T10:00:00Z",
-          location: "Room 101",
-          description: "Initial consultation",
-        },
-        {
-          dateTime: "2024-10-27T14:00:00Z",
-          location: "Online",
-          description: "Online interview",
-        },
-        {
-          dateTime: "2024-10-28T09:30:00Z",
-          location: "Room 102",
-          description: "Document review",
-        },
-      ],
     };
   } catch (error) {
     return {
@@ -207,43 +138,15 @@ const fetchReturning = async () => {
     });
     if (fetch.length == 0) {
       return {
-        message: "fetch successfully",
-        data: [
-          {
-            id: "",
-            email: "",
-            firstName: "",
-            middleName: "",
-            lastName: "",
-            studentType: "",
-            status: "",
-            createdAt: "",
-            updatedAt: "",
-          },
-        ],
+        message: "No Returning students found", // Change this line
+        data: [], // Ideally, return an empty array, not a placeholder object
+        availableSlots: [], // Or specific empty slots if applicable
       };
     }
 
     return {
       message: "fetch successfully",
       data: fetch,
-      availableSlots: [
-        {
-          dateTime: "2024-10-27T10:00:00Z",
-          location: "Room 101",
-          description: "Initial consultation",
-        },
-        {
-          dateTime: "2024-10-27T14:00:00Z",
-          location: "Online",
-          description: "Online interview",
-        },
-        {
-          dateTime: "2024-10-28T09:30:00Z",
-          location: "Room 102",
-          description: "Document review",
-        },
-      ],
     };
   } catch (error) {
     return {
@@ -261,47 +164,15 @@ const fetchAdmission = async () => {
     });
     if (fetch.length == 0) {
       return {
-        message: "fetch successfully",
-        data: [
-          {
-            id: "",
-            admissionNumber: "",
-            examSchedule: "",
-            fname: "",
-            mname: "",
-            courseChoices: "",
-            lname: "",
-            password: "",
-            token: "",
-            email: "",
-            status: "",
-            createdAt: "",
-            updatedAt: "",
-          },
-        ],
+        message: "No admission taker students found", // Change this line
+        data: [], // Ideally, return an empty array, not a placeholder object
+        availableSlots: [], // Or specific empty slots if applicable
       };
     }
 
     return {
       message: "fetch successfully",
       data: fetch,
-      availableSlots: [
-        {
-          dateTime: "2024-10-27T10:00:00Z",
-          location: "Room 101",
-          description: "Initial consultation",
-        },
-        {
-          dateTime: "2024-10-27T14:00:00Z",
-          location: "Online",
-          description: "Online interview",
-        },
-        {
-          dateTime: "2024-10-28T09:30:00Z",
-          location: "Room 102",
-          description: "Document review",
-        },
-      ],
     };
   } catch (error) {
     return {
@@ -317,6 +188,33 @@ const archivedNew = async ({ id }) => {
     }
 
     const toArchived = await NewStudent.update(
+      { status: "archive" },
+      {
+        where: {
+          id: { [Op.in]: id }, // ✅ Correct usage
+        },
+      }
+    );
+
+    return {
+      message: "success",
+      affectedRows: toArchived[0], // Sequelize update() returns [affectedRows]
+    };
+  } catch (error) {
+    return {
+      message: "An error occurred",
+      error: error.message,
+    };
+  }
+};
+
+const archivedReturning = async ({ id }) => {
+  try {
+    if (!Array.isArray(id) || id.length === 0) {
+      throw new Error("ID must be a non-empty array.");
+    }
+
+    const toArchived = await Returning.update(
       { status: "archive" },
       {
         where: {
@@ -534,52 +432,18 @@ const fetchTransferee = async () => {
         status: "active",
       },
     });
+    // Inside your fetchTransferee function:
     if (fetch.length == 0) {
       return {
-        message: "fetch successfully",
-        data: [
-          {
-            id: "",
-            email: "",
-            firstName: "",
-            middleName: "",
-            lastName: "",
-            studentType: "",
-            nameCollege: "",
-            courseEnrolled: "",
-            highestAttainedYear: "",
-            schoolAddress: "",
-            awardsReceived: "",
-            residency: "",
-            schoolTypeCollege: "",
-            status: "",
-            createdAt: "2025",
-            updatedAt: "",
-          },
-        ],
+        message: "No transfer students found", // Change this line
+        data: [], // Ideally, return an empty array, not a placeholder object
+        availableSlots: [], // Or specific empty slots if applicable
       };
     }
 
     return {
       message: "fetch successfully",
       data: fetch,
-      availableSlots: [
-        {
-          dateTime: "2024-10-27T10:00:00Z",
-          location: "Room 101",
-          description: "Initial consultation",
-        },
-        {
-          dateTime: "2024-10-27T14:00:00Z",
-          location: "Online",
-          description: "Online interview",
-        },
-        {
-          dateTime: "2024-10-28T09:30:00Z",
-          location: "Room 102",
-          description: "Document review",
-        },
-      ],
     };
   } catch (error) {
     return {
@@ -683,4 +547,5 @@ module.exports = {
   fetchAdmission,
   changeSchedule,
   archivedAdmission,
+  archivedReturning,
 };
